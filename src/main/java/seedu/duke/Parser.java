@@ -1,5 +1,4 @@
 package seedu.duke;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -72,6 +71,17 @@ public class Parser {
     }
 
     /**
+     * Returns the list number which is assigned to the task.
+     *
+     * @param arg user input that contains word [done].
+     * @return task number.
+     */
+    public static int getNum(String arg) {
+        String[] words = arg.trim().split("[\\s]+");
+        return Integer.parseInt(words[1]);
+    }
+
+    /**
      * Returns the description of the task only, without the date or the keyword.
      *
      * @param query user raw data input.
@@ -109,7 +119,7 @@ public class Parser {
     /**
      * Function creates a new Todo task to be input in tasks.
      *
-     * @param tasks ArrayList of tasks
+     * @param members ArrayList of members
      * @param query user input
      */
     public static void makeMemberEntry(ArrayList<Member> members, String query) {
@@ -120,7 +130,7 @@ public class Parser {
     /**
      * Function creates a new Event task to be input in tasks.
      *
-     * @param tasks ArrayList of tasks
+     * @param trainings ArrayList of trainings
      * @param query user input
      */
     public static void makeTrainingEntry(ArrayList<TrainingSchedule> trainings, String query) {
@@ -132,7 +142,7 @@ public class Parser {
      * Function finds tasks with descriptions matching the user's query and adds them to a new ArrayList. If no matching
      * words are found, the user will be notified.
      *
-     * @param tasks ArrayList of tasks
+     * @param trainings ArrayList of trainings
      * @param query user input
      */
     public static void findInTraining(ArrayList<TrainingSchedule> trainings, String query) {
@@ -149,7 +159,7 @@ public class Parser {
      * Function finds tasks with descriptions matching the user's query and adds them to a new ArrayList. If no matching
      * words are found, the user will be notified.
      *
-     * @param tasks ArrayList of tasks
+     * @param members ArrayList of members
      * @param query user input
      */
     public static void findInMembers(ArrayList<Member> members, String query) {
@@ -165,12 +175,13 @@ public class Parser {
     /**
      * Function deletes an item from the ArrayList task.
      *
-     * @param tasks ArrayList of tasks
+     * @param members ArrayList of members
      * @param query user input
      */
     public static void deleteMember(ArrayList<Member> members, String query) {
         try {
-            Member referencedMember = members.get(memberNumber);
+            int memberNumber = Parser.getNum(query) - 1;
+            Member referencedMember = members.get(name);
             members.remove(memberNumber);
             Ui.printDeletedMemberMessage(referencedMember);
         } catch (IndexOutOfBoundsException exception) {
@@ -184,16 +195,7 @@ public class Parser {
             trainings.remove(trainingNumber);
             Ui.printDeletedTrainingMessage(referencedTraining);
         } catch (IndexOutOfBoundsException exception) {
-            System.out.println("There is no such training schedule number...");
-        }
-    }
-
-    public static void wrongInputTypeMessage() {
-        try {
-            throw new InvalidInputsException.MissingKeyword(Ui.printInvalidMessage());
-        } catch (InvalidInputsException.MissingKeyword exception) {
-            exception.printStackTrace();
-            System.out.println("Invalid keyword!!!");
+            System.out.println("There is no such training entry...");
         }
     }
 
@@ -202,13 +204,11 @@ public class Parser {
      */
     public static void waitForQuery() {
         String query = "";
-        Storage.loadTask();
         Scanner userInput = new Scanner(System.in);
         while (!query.equals("bye")) {
             System.out.print("=>");
             if (userInput.hasNextLine()) {
                 query = userInput.nextLine();
-                Storage.saveTask(query);
             }
             Entry.addEntry(query);
         }
