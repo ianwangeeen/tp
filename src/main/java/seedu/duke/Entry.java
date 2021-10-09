@@ -37,7 +37,6 @@ public class Entry {
         case FIND_TRAINING_KEYWORD:
             Parser.findInTraining(trainings, entry);
         case NO_KEYWORD:
-            Parser.wrongInputTypeMessage();
             break;
         case EXIT_KEYWORD:
             Ui.printExitMessage();
